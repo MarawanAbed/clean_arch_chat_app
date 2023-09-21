@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "881636060815",
+    "project_id": "clean-arch-chat",
+    "storage_bucket": "clean-arch-chat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881636060815:android:c1fa7244eb940fc3b70afa",
+        "android_client_info": {
+          "package_name": "com.example.clean_arch_chat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgBG3bWHvCjurP7RBsqsvNnt03y3QXVrU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
