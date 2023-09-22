@@ -21,6 +21,7 @@ class _SignUpState extends State<SignUp> {
   var passwordController = TextEditingController();
 
   var formKey = GlobalKey<FormState>();
+
   @override
   void dispose() {
     emailController.dispose();
@@ -28,6 +29,7 @@ class _SignUpState extends State<SignUp> {
     passwordController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CredentialCubit, CredentialState>(
@@ -105,9 +107,11 @@ class _SignUpState extends State<SignUp> {
                         prefixIcon: Icons.lock,
                         controller: passwordController,
                         obscureText: cubit.isVisible,
-                        suffixIcon: IconButton(onPressed: (){
-                          cubit.changePasswordVisibility();
-                        }, icon: Icon(cubit.suffix)),
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              cubit.changePasswordVisibility();
+                            },
+                            icon: Icon(cubit.suffix)),
                         keyboardType: TextInputType.visiblePassword,
                         validator: (value) {
                           if (value!.isEmpty) {
@@ -128,7 +132,8 @@ class _SignUpState extends State<SignUp> {
                                 userName: userNameController.text,
                                 userEmail: emailController.text,
                                 userImage:
-                                    'https://image.flaticon.com/icons/png/512/147/147144.png',
+                                    'https://image.freepik.com/free-photo/photo-attractive-bearded-young-man-with-cherful-expression-makes-okay-gesture-with-both-hands-likes-something-dressed-red-casual'
+                                        '-t-shirt-poses-against-white-wall-gestures-indoor_273609-16239.jpg',
                                 userLastActive: DateTime.now(),
                                 userIsOnline: true,
                               ),
