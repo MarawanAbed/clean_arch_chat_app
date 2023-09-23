@@ -16,6 +16,18 @@ class UserEntity {
      this.userLastActive,
      this.userIsOnline,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'userUId': userUId,
+      'userName': userName,
+      'userEmail': userEmail,
+      'userPassword': userPassword,
+      'userImage': userImage,
+      'userLastActive': userLastActive,
+      'userIsOnline': userIsOnline,
+    };
+  }
 }
 
 

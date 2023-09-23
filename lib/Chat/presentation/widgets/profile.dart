@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:clean_arch_chat/Chat/domain/entities/user_entity.dart';
 import 'package:clean_arch_chat/Chat/presentation/manager/Home/home_cubit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -115,15 +114,9 @@ class _ProfileState extends State<Profile> {
             name: userName, imageFile: cubit.profileImage!);
       } else {
         // No new image selected, update the user's profile without changing the image
-        await cubit.updateData(UserEntity(
-          userUId: cubit.userEntity!.userUId,
-          userName: userName,
-          userImage: cubit.userEntity!.userImage,
-          userEmail: cubit.userEntity!.userEmail,
-          userIsOnline: true,
-          userPassword: cubit.userEntity!.userPassword,
-          userLastActive: DateTime.now(),
-        ));
+        await cubit.updateData({
+          'name': userName,
+        });
       }
     }
   }

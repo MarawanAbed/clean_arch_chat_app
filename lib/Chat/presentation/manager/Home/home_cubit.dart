@@ -47,10 +47,10 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  updateData(UserEntity user) async {
+  updateData(Map<String,dynamic>data) async {
     try {
       emit(HomeUpdateUserLoading());
-      await updateUser.call(user);
+      await updateUser.call(data);
       emit(HomeUpdateUserSuccess());
     } on SocketException catch (e) {
       emit(HomeUpdateUserError(e.toString()));
@@ -117,7 +117,7 @@ class HomeCubit extends Cubit<HomeState> {
         userPassword: userEntity!.userPassword,
         userIsOnline: true,
         userLastActive: DateTime.now(),
-      );
+      ).toMap();
 
       await updateUser.call(updatedUser);
       emit(HomeUpdateUserSuccess());

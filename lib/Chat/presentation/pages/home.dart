@@ -1,4 +1,4 @@
-
+import 'package:clean_arch_chat/Chat/presentation/manager/Home/home_cubit.dart';
 import 'package:clean_arch_chat/Chat/presentation/widgets/profile.dart';
 import 'package:clean_arch_chat/Chat/presentation/widgets/users.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -35,7 +35,31 @@ class _HomeScreenState extends State<HomeScreen>
     super.dispose();
   }
 
-
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    final currentTime = DateTime.now();
+    switch (state) {
+      case AppLifecycleState.resumed:
+        HomeCubit.get(context).updateData(
+          {
+            'isOnline': true,
+            'lastActive': currentTime,
+          }
+        );
+        break;
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+        HomeCubit.get(context).updateData(
+            {
+              'isOnline': false,
+              'lastActive': currentTime,
+            }
+        );
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

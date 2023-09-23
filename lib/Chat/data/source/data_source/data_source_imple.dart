@@ -4,7 +4,6 @@ import 'package:clean_arch_chat/Chat/data/models/message_model.dart';
 import 'package:clean_arch_chat/Chat/data/models/user_model.dart';
 import 'package:clean_arch_chat/Chat/data/source/data_source/data_source.dart';
 import 'package:clean_arch_chat/Chat/domain/entities/message_entity.dart';
-import 'package:clean_arch_chat/Chat/domain/entities/user_entity.dart';
 import 'package:clean_arch_chat/utils/common/common.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,27 +33,11 @@ class HomeDataSourceImpl implements HomeDataSource {
   }
 
   @override
-  Future updateUser(UserEntity user) async {
-    Map<String, dynamic> userMap = {};
-    final userCollection = firebaseStore.collection('users');
-    if (user.userUId != null && user.userUId!.isNotEmpty) {
-      userMap['uId'] = user.userUId;
-    }
-    if (user.userImage != null && user.userImage!.isNotEmpty) {
-      userMap['image'] = user.userImage;
-    }
-    if (user.userName != null && user.userName!.isNotEmpty) {
-      userMap['name'] = user.userName;
-    }
-    if (user.userEmail != null && user.userEmail!.isNotEmpty) {
-      userMap['email'] = user.userEmail;
-    }
-    if (user.userPassword != null && user.userPassword!.isNotEmpty) {
-      userMap['password'] = user.userPassword;
-    }
-    userMap['lastActive'] = DateTime.now();
-    userMap['isOnline'] = true;
-    userCollection.doc(user.userUId).update(userMap);
+  Future updateUser(Map<String,dynamic>data) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update(data);
   }
 
   @override

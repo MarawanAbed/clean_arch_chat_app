@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:clean_arch_chat/Chat/data/source/data_source/data_source.dart';
 import 'package:clean_arch_chat/Chat/domain/entities/message_entity.dart';
-import 'package:clean_arch_chat/Chat/domain/entities/user_entity.dart';
 import 'package:clean_arch_chat/Chat/domain/repo/repo.dart';
 
 class HomeRepoImpl implements HomeRepo{
@@ -20,8 +19,8 @@ class HomeRepoImpl implements HomeRepo{
   }
 
   @override
-  Future updateUser(UserEntity user)async {
-    return await dataSource.updateUser(user);
+  Future updateUser(Map<String,dynamic>data)async {
+    return await dataSource.updateUser(data);
   }
 
   @override
