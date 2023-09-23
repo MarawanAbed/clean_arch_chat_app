@@ -3,6 +3,7 @@ import 'package:clean_arch_chat/Chat/domain/usecases/add_text_message.dart';
 import 'package:clean_arch_chat/Chat/domain/usecases/get_all_message.dart';
 import 'package:clean_arch_chat/Chat/domain/usecases/get_all_user.dart';
 import 'package:clean_arch_chat/Chat/domain/usecases/get_single_user.dart';
+import 'package:clean_arch_chat/Chat/domain/usecases/search_users.dart';
 import 'package:clean_arch_chat/Chat/domain/usecases/update_user.dart';
 import 'package:clean_arch_chat/Chat/domain/usecases/upload_image_profile.dart';
 import 'package:clean_arch_chat/Chat/presentation/manager/Home/home_cubit.dart';
@@ -56,6 +57,7 @@ class MyApp extends StatelessWidget {
             getUser: sl<GetAllUserUseCase>(),
             updateUser: sl<UpdateUserUseCase>(),
             signOut: sl<HomeSignOutUseCase>(),
+            searchUserUseCases: sl<SearchUserUseCases>(),
           )..getSingleUserMethod(FirebaseAuth.instance.currentUser!.uid),
         ),
         BlocProvider(

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:clean_arch_chat/Chat/domain/entities/user_entity.dart';
 import 'package:clean_arch_chat/Chat/domain/usecases/get_all_user.dart';
 import 'package:clean_arch_chat/Chat/domain/usecases/get_single_user.dart';
+import 'package:clean_arch_chat/Chat/domain/usecases/search_users.dart';
 
 import 'package:clean_arch_chat/Chat/domain/usecases/sign_out.dart';
 import 'package:clean_arch_chat/Chat/domain/usecases/update_user.dart';
@@ -21,7 +22,7 @@ class HomeCubit extends Cubit<HomeState> {
     required this.getUser,
     required this.updateUser,
     required this.signOut,
-
+    required this.searchUserUseCases
   }) : super(HomeInitial());
 
   final GetAllUserUseCase getUser;
@@ -30,6 +31,23 @@ class HomeCubit extends Cubit<HomeState> {
   final GetSingleUserUseCase singleUser;
   final UploadImageProfileUseCase uploadImage;
   static HomeCubit get(context) => BlocProvider.of(context);
+
+  final SearchUserUseCases searchUserUseCases;
+
+  List<UserEntity>usersSearch=[];
+  searchUser(String userName) async {
+    try {
+      emit(HomeSearchLoading());
+      final userStream=await searchUserUseCases(userName);
+      userStream.listen((users) {
+        this.usersSearch=users;
+        emit(HomeSearchSuccess());
+      });
+    }  catch (e) {
+      print(e);
+      emit(HomeSearchError(e.toString()));
+    }
+  }
 
   List<UserEntity> users = [];
 

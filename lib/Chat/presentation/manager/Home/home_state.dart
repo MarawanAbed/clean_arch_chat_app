@@ -47,3 +47,13 @@ class HomeProfileImagePickedErrorState extends HomeState {
 class HomeProfileImageUploadLoadingState extends HomeState {}
 class HomeProfileImageUploadErrorState extends HomeState {}
 
+
+class HomeSearchLoading extends HomeState {}
+class HomeSearchSuccess extends HomeState {
+
+}
+class HomeSearchError extends HomeState {
+  final String message;
+
+  HomeSearchError(this.message);
+}
