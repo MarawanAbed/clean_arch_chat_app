@@ -12,5 +12,5 @@ abstract class HomeDataSource {
   Future<String> uploadProfileImage(File imageFile);
   Future<dynamic>addTextMessage(MessageEntity messageEntity);
   Future<dynamic>addImageMessage(String receiverId, File imageFile);
-  Future<dynamic>getAllMessages(String receiverId);
+  Stream<List<MessageEntity>>getAllMessages(String receiverId);
 }

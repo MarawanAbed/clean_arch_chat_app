@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:clean_arch_chat/auth/data/models/user_model.dart';
 import 'package:clean_arch_chat/auth/data/source/remote_data_source/remote_data_source.dart';
 import 'package:clean_arch_chat/auth/domain/entities/user_entity.dart';
-import 'package:clean_arch_chat/utils/services/show_snack_message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 

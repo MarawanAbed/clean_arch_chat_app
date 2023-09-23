@@ -50,8 +50,8 @@ class HomeRepoImpl implements HomeRepo{
   }
 
   @override
-  Future getAllMessages(String receiverId) async{
-    return await dataSource.getAllMessages(receiverId);
+  Stream<List<MessageEntity>> getAllMessages(String receiverId) {
+    return  dataSource.getAllMessages(receiverId);
   }
 
 

@@ -22,9 +22,10 @@ class HomeDataSourceImpl implements HomeDataSource {
         .collection('users')
         .orderBy('lastActive', descending: true);
     return userCollection.snapshots(includeMetadataChanges: true).map(
-        (querySnapshot) => querySnapshot.docs
-            .map((e) => UserModel.fromJson(e.data()))
-            .toList());
+            (querySnapshot) =>
+            querySnapshot.docs
+                .map((e) => UserModel.fromJson(e.data()))
+                .toList());
   }
 
   @override
@@ -69,10 +70,12 @@ class HomeDataSourceImpl implements HomeDataSource {
     try {
       final uId = await currentUserId();
       final Reference storageReference = FirebaseStorage.instance.ref().child(
-          'profile_images/$uId/${DateTime.now().millisecondsSinceEpoch}');
+          'profile_images/$uId/${DateTime
+              .now()
+              .millisecondsSinceEpoch}');
       final UploadTask uploadTask = storageReference.putFile(imageFile);
       final TaskSnapshot taskSnapshot =
-          await uploadTask.whenComplete(() => null);
+      await uploadTask.whenComplete(() => null);
       final imageUrl = await taskSnapshot.ref.getDownloadURL();
       return imageUrl;
     } catch (e) {
@@ -84,6 +87,7 @@ class HomeDataSourceImpl implements HomeDataSource {
   @override
   Future addTextMessage(MessageEntity messageEntity) async {
     final uId = await currentUserId();
+    //set my chat
     final message = MessageModel(
       senderId: uId,
       receiverId: messageEntity.chatReceiverId,
@@ -98,16 +102,28 @@ class HomeDataSourceImpl implements HomeDataSource {
         .doc(messageEntity.chatReceiverId)
         .collection('messages')
         .add(message);
+    //set receiver chat
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(messageEntity.chatReceiverId)
+        .collection('chats')
+        .doc(uId)
+        .collection('messages')
+        .add(message);
   }
 
   @override
   Future<String> addImageMessage(String receiverId, File imageFile) async {
     try {
       final uId = await currentUserId();
-      final Reference storageReference = FirebaseStorage.instance.ref().child(
-          'chat_images/$uId/${DateTime.now().millisecondsSinceEpoch}');
+      final Reference storageReference = FirebaseStorage.instance
+          .ref()
+          .child('chat_images/$uId/${DateTime
+          .now()
+          .millisecondsSinceEpoch}');
       final UploadTask uploadTask = storageReference.putFile(imageFile);
-      final TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
+      final TaskSnapshot taskSnapshot =
+      await uploadTask.whenComplete(() => null);
       final imageUrl = await taskSnapshot.ref.getDownloadURL();
 
       // Create a message with the image URL
@@ -119,12 +135,20 @@ class HomeDataSourceImpl implements HomeDataSource {
         messageType: MessageType.image,
       ).toMap();
 
-      // Store the message in the chat
+      // Store the message in the my chat
       FirebaseFirestore.instance
           .collection('users')
           .doc(uId)
           .collection('chats')
           .doc(receiverId)
+          .collection('messages')
+          .add(message);
+      //store the message in the receiver chat
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(receiverId)
+          .collection('chats')
+          .doc(uId)
           .collection('messages')
           .add(message);
 
@@ -136,7 +160,7 @@ class HomeDataSourceImpl implements HomeDataSource {
   }
 
   @override
-  Future<List<MessageEntity>> getAllMessages(String receiverId) async {
+  Stream<List<MessageEntity>> getAllMessages(String receiverId) async* {
     final uId = await currentUserId();
     final messageCollection = firebaseStore
         .collection('users')
@@ -144,14 +168,16 @@ class HomeDataSourceImpl implements HomeDataSource {
         .collection('chats')
         .doc(receiverId)
         .collection('messages')
-        .orderBy('sendTime', descending: false);
+        .orderBy('sendTime', descending: false)
+        .snapshots();
 
-    final querySnapshot = await messageCollection.get();
+    await for (QuerySnapshot querySnapshot in messageCollection) {
+      final List<MessageEntity> messages = querySnapshot.docs
+          .map((doc) => MessageModel.fromJson(doc.data()))
+          .toList();
 
-    final List<MessageEntity> messages = querySnapshot.docs
-        .map((doc) => MessageModel.fromJson(doc.data()))
-        .toList();
-
-    return messages;
+      yield messages;
+    }
   }
+
 }

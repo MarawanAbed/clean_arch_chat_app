@@ -1,6 +1,8 @@
 import 'package:clean_arch_chat/auth/data/source/remote_data_source/remote_data_source.dart';
 import 'package:clean_arch_chat/auth/domain/entities/user_entity.dart';
 import 'package:clean_arch_chat/auth/domain/repositories/repo.dart';
+import 'package:clean_arch_chat/utils/services/show_snack_message.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthRepoImpl implements AuthRepository {
   final AuthRemoteDataSource _remoteDataSource;
@@ -24,7 +26,15 @@ class AuthRepoImpl implements AuthRepository {
 
   @override
   Future signIn(UserEntity userEntity) async {
-    return await _remoteDataSource.signIn(userEntity);
+    try {
+      return await _remoteDataSource.signIn(userEntity);
+    }on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        Utils.showSnackBar('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        Utils.showSnackBar('Wrong password provided for that user.');
+      }
+    }
   }
 
   @override

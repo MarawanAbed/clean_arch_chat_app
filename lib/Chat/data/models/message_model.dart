@@ -22,15 +22,25 @@ class MessageModel extends MessageEntity {
             chatMessageType: messageType,
   );
 
-  factory MessageModel.fromJson(Map<String, dynamic> json) {
-    return MessageModel(
-      senderId: json["senderId"],
-      receiverId: json["receiverId"],
-      content: json["content"],
-      sendTime: json["sendTime"].toDate(),
-      messageType: getMessageTypeFromString(json["messageType"]),
-    );
+  factory MessageModel.fromJson(Object? json) {
+    if (json == null) {
+      // Handle null input if necessary
+      throw ArgumentError('json cannot be null');
+    }
+
+    if (json is Map<String, dynamic>) {
+      return MessageModel(
+        senderId: json["senderId"],
+        receiverId: json["receiverId"],
+        content: json["content"],
+        sendTime: json["sendTime"]?.toDate(),
+        messageType: getMessageTypeFromString(json["messageType"]),
+      );
+    } else {
+      throw ArgumentError('json must be a Map<String, dynamic>');
+    }
   }
+
 
   //create tomap
   Map<String, dynamic> toMap() {

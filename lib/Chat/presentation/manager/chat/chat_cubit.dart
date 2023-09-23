@@ -75,8 +75,10 @@ class ChatCubit extends Cubit<ChatState> {
   getMessages(String receiverId) async {
     try {
       emit(ChatGetAllMessagesLoading());
-      message = await getAllMessages.call(receiverId);
-      emit(ChatGetAllMessagesSuccess());
+      getAllMessages(receiverId).listen((List<MessageEntity> newMessages) {
+        message = newMessages;
+        emit(ChatGetAllMessagesSuccess());
+    });
     } catch (e) {
       print(e.toString());
       emit(ChatGetAllMessagesError(e.toString()));
