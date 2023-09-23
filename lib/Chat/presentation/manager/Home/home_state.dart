@@ -46,3 +46,4 @@ class HomeProfileImagePickedErrorState extends HomeState {
 
 class HomeProfileImageUploadLoadingState extends HomeState {}
 class HomeProfileImageUploadErrorState extends HomeState {}
+

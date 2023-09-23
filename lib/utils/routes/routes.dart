@@ -1,5 +1,6 @@
 
 import 'package:clean_arch_chat/Chat/presentation/pages/home.dart';
+import 'package:clean_arch_chat/Chat/presentation/pages/search.dart';
 import 'package:clean_arch_chat/auth/presentation/pages/auth_screen.dart';
 import 'package:clean_arch_chat/auth/presentation/pages/forget_password.dart';
 import 'package:clean_arch_chat/auth/presentation/pages/sign_in.dart';
@@ -27,6 +28,8 @@ class OnGenerateRoutes{
         return MaterialPageRoute(builder: (_)=>const ForgetPassword());
       case '/verifyEmail':
         return MaterialPageRoute(builder: (_)=>const VerifyEmail());
+      case '/search':
+        return MaterialPageRoute(builder: (_)=>const SearchScreen());
       case '/home':
         return MaterialPageRoute(builder: (_)=>const HomeScreen());
       default:

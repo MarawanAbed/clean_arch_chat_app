@@ -53,5 +53,9 @@ class HomeRepoImpl implements HomeRepo{
     return  dataSource.getAllMessages(receiverId);
   }
 
+  @override
+  searchUser(String userName) async{
+  return await dataSource.searchUser(userName);
+  }
 
 }

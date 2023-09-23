@@ -21,10 +21,9 @@ class HomeDataSourceImpl implements HomeDataSource {
         .collection('users')
         .orderBy('lastActive', descending: true);
     return userCollection.snapshots(includeMetadataChanges: true).map(
-            (querySnapshot) =>
-            querySnapshot.docs
-                .map((e) => UserModel.fromJson(e.data()))
-                .toList());
+        (querySnapshot) => querySnapshot.docs
+            .map((e) => UserModel.fromJson(e.data()))
+            .toList());
   }
 
   @override
@@ -33,7 +32,7 @@ class HomeDataSourceImpl implements HomeDataSource {
   }
 
   @override
-  Future updateUser(Map<String,dynamic>data) async {
+  Future updateUser(Map<String, dynamic> data) async {
     await FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -64,12 +63,10 @@ class HomeDataSourceImpl implements HomeDataSource {
     try {
       final uId = await currentUserId();
       final Reference storageReference = FirebaseStorage.instance.ref().child(
-          'profile_images/$uId/${DateTime
-              .now()
-              .millisecondsSinceEpoch}');
+          'profile_images/$uId/${DateTime.now().millisecondsSinceEpoch}');
       final UploadTask uploadTask = storageReference.putFile(imageFile);
       final TaskSnapshot taskSnapshot =
-      await uploadTask.whenComplete(() => null);
+          await uploadTask.whenComplete(() => null);
       final imageUrl = await taskSnapshot.ref.getDownloadURL();
       return imageUrl;
     } catch (e) {
@@ -165,5 +162,18 @@ class HomeDataSourceImpl implements HomeDataSource {
       yield messages;
     }
   }
+
+  @override
+  searchUser(String? userName)async {
+    final userCollection = firebaseStore
+        .collection('users')
+        .where('name', isGreaterThanOrEqualTo: userName)
+        .where('name', isLessThan: '${userName!}z');
+    return userCollection.snapshots(includeMetadataChanges: true).map(
+            (querySnapshot) => querySnapshot.docs
+            .map((e) => UserModel.fromJson(e.data()))
+            .toList());
+  }
+
 
 }

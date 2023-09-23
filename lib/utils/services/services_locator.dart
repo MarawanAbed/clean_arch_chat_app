@@ -8,6 +8,7 @@ import 'package:clean_arch_chat/Chat/domain/usecases/current_user_id.dart';
 import 'package:clean_arch_chat/Chat/domain/usecases/get_all_message.dart';
 import 'package:clean_arch_chat/Chat/domain/usecases/get_all_user.dart';
 import 'package:clean_arch_chat/Chat/domain/usecases/get_single_user.dart';
+import 'package:clean_arch_chat/Chat/domain/usecases/search_users.dart';
 import 'package:clean_arch_chat/Chat/domain/usecases/sign_out.dart';
 import 'package:clean_arch_chat/Chat/domain/usecases/update_user.dart';
 import 'package:clean_arch_chat/Chat/domain/usecases/upload_image_profile.dart';
@@ -65,7 +66,7 @@ Future<void> init() async {
   sl.registerLazySingleton<AddTextMessageUseCase>(() => AddTextMessageUseCase(sl.call()));
   sl.registerLazySingleton<AddImageMessageUseCase>(() => AddImageMessageUseCase(sl.call()));
   sl.registerLazySingleton<GetAllMessagesUseCase>(() => GetAllMessagesUseCase(sl.call()));
-
+  sl.registerLazySingleton<SearchUserUseCases>(() => SearchUserUseCases(sl.call()));
   sl.registerLazySingleton<GetSingleUserUseCase>(
           () => GetSingleUserUseCase(sl.call()));
   //external

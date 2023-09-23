@@ -41,22 +41,18 @@ class _HomeScreenState extends State<HomeScreen>
     final currentTime = DateTime.now();
     switch (state) {
       case AppLifecycleState.resumed:
-        HomeCubit.get(context).updateData(
-          {
-            'isOnline': true,
-            'lastActive': currentTime,
-          }
-        );
+        HomeCubit.get(context).updateData({
+          'isOnline': true,
+          'lastActive': currentTime,
+        });
         break;
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
-        HomeCubit.get(context).updateData(
-            {
-              'isOnline': false,
-              'lastActive': currentTime,
-            }
-        );
+        HomeCubit.get(context).updateData({
+          'isOnline': false,
+          'lastActive': currentTime,
+        });
         break;
     }
   }
@@ -86,7 +82,9 @@ class _HomeScreenState extends State<HomeScreen>
             icon: const Icon(Icons.logout),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, '/search');
+            },
             icon: const Icon(Icons.search),
           ),
         ],

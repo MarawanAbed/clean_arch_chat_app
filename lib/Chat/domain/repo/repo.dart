@@ -12,5 +12,5 @@ abstract class HomeRepo{
   Future<dynamic>addTextMessage(MessageEntity messageEntity);
   Future<dynamic>addImageMessage(String receiverId, File imageFile);
   Stream<List<MessageEntity>>getAllMessages(String receiverId);
-
+  searchUser(String userName);
 }

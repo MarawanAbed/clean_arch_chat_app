@@ -43,19 +43,21 @@ class _UsersState extends State<Users> {
             child: Text('Error'),
           );
         }
-        return Column(
-          children: [
-            ListView.separated(
-              shrinkWrap: true,
-              itemBuilder: (context, index) => UserItem(
-                userEntity: cubit.users[index],
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              ListView.separated(
+                shrinkWrap: true,
+                itemBuilder: (context, index) => UserItem(
+                  userEntity: cubit.users[index],
+                ),
+                separatorBuilder: (context, index) => const SizedBox(
+                  height: 10,
+                ),
+                itemCount: cubit.users.length,
               ),
-              separatorBuilder: (context, index) => const SizedBox(
-                height: 10,
-              ),
-              itemCount: cubit.users.length,
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
