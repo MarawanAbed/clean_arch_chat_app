@@ -116,15 +116,7 @@ class HomeDataSourceImpl implements HomeDataSource {
   Future<String> addImageMessage(String receiverId, File imageFile) async {
     try {
       final uId = await currentUserId();
-      final Reference storageReference = FirebaseStorage.instance
-          .ref()
-          .child('chat_images/$uId/${DateTime
-          .now()
-          .millisecondsSinceEpoch}');
-      final UploadTask uploadTask = storageReference.putFile(imageFile);
-      final TaskSnapshot taskSnapshot =
-      await uploadTask.whenComplete(() => null);
-      final imageUrl = await taskSnapshot.ref.getDownloadURL();
+      final imageUrl = await uploadProfileImage(imageFile);
 
       // Create a message with the image URL
       final message = MessageModel(
