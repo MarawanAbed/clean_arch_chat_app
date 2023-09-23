@@ -1,6 +1,5 @@
 import 'package:clean_arch_chat/Chat/presentation/manager/chat/chat_cubit.dart';
 import 'package:clean_arch_chat/Chat/presentation/widgets/messageBubble.dart';
-import 'package:clean_arch_chat/utils/common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -34,7 +33,6 @@ class _ChatMessageState extends State<ChatMessage> {
             //equal to the receiver id then its sent by me
             //else its sent by the other user
             final isMe = message.chatSenderId != widget.receiverId;
-            final isTextMessage = message.chatMessageType == MessageType.textType;
             return MessageBubble(
               isMe: isMe,
               messageModel: cubit.message[index],
