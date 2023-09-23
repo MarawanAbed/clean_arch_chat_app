@@ -1,32 +1,40 @@
-import 'package:clean_arch_chat/Chat/domain/entities/user_entity.dart';
+
 import 'package:clean_arch_chat/Chat/presentation/widgets/profile.dart';
 import 'package:clean_arch_chat/Chat/presentation/widgets/users.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key,});
+  const HomeScreen({
+    super.key,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin{
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   final List<Tab> _tabList = [
     const Tab(text: 'Chats '),
     const Tab(text: 'Profile'),
   ];
   TabController? _tabController;
+
   @override
   void initState() {
     _tabController = TabController(length: _tabList.length, vsync: this);
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
+
   @override
   void dispose() {
     _tabController!.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
+
 
 
   @override
@@ -59,15 +67,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           ),
         ],
       ),
-      body:TabBarView(
+      body: TabBarView(
         controller: _tabController,
-          children: const [
-            Users(),
-            Profile(),
-          ] ,
+        children: const [
+          Users(),
+          Profile(),
+        ],
       ),
     );
   }
 }
-
-

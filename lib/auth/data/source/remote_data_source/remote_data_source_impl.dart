@@ -40,6 +40,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future signIn(UserEntity userEntity) async {
     await auth.signInWithEmailAndPassword(
         email: userEntity.userEmail!, password: userEntity.userPassword!);
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(auth.currentUser!.uid)
+        .update({'isOnline': true, 'lastActive': DateTime.now()});
   }
 
   @override

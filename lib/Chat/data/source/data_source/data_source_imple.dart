@@ -37,12 +37,23 @@ class HomeDataSourceImpl implements HomeDataSource {
   Future updateUser(UserEntity user) async {
     Map<String, dynamic> userMap = {};
     final userCollection = firebaseStore.collection('users');
+    if (user.userUId != null && user.userUId!.isNotEmpty) {
+      userMap['uId'] = user.userUId;
+    }
     if (user.userImage != null && user.userImage!.isNotEmpty) {
       userMap['image'] = user.userImage;
     }
     if (user.userName != null && user.userName!.isNotEmpty) {
       userMap['name'] = user.userName;
     }
+    if (user.userEmail != null && user.userEmail!.isNotEmpty) {
+      userMap['email'] = user.userEmail;
+    }
+    if (user.userPassword != null && user.userPassword!.isNotEmpty) {
+      userMap['password'] = user.userPassword;
+    }
+    userMap['lastActive'] = DateTime.now();
+    userMap['isOnline'] = true;
     userCollection.doc(user.userUId).update(userMap);
   }
 
