@@ -47,9 +47,18 @@ dependencies:
   firebase_storage: any
   cached_network_image: any
   get_it: ^7.6.4
+  flutter_local_notifications: ^15.1.1
+  firebase_messaging: ^14.1.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.9.1 # Use a version that is compatible with flutter_icons
+
+flutter_icons:
+  image_path: "assets/images/Logo_light.png"
+  android: true
+  ios: true
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -57,7 +66,6 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
