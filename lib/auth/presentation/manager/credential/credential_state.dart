@@ -32,3 +32,16 @@ class ForgetPasswordError extends CredentialState {
 
 
 class ChangePasswordVisibility extends CredentialState {}
+
+class pickImageSuccess extends CredentialState {}
+class pickImageError extends CredentialState {
+
+}
+
+class UploadImageLoading extends CredentialState {}
+class UploadImageSuccess extends CredentialState {}
+class UploadImageError extends CredentialState {
+  final String message;
+
+  UploadImageError(this.message);
+}

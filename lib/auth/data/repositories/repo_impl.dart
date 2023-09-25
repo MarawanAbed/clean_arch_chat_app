@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:clean_arch_chat/auth/data/source/remote_data_source/remote_data_source.dart';
 import 'package:clean_arch_chat/auth/domain/entities/user_entity.dart';
 import 'package:clean_arch_chat/auth/domain/repositories/repo.dart';
@@ -28,7 +30,7 @@ class AuthRepoImpl implements AuthRepository {
   Future signIn(UserEntity userEntity) async {
     try {
       return await _remoteDataSource.signIn(userEntity);
-    }on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         Utils.showSnackBar('No user found for that email.');
       } else if (e.code == 'wrong-password') {
@@ -39,7 +41,17 @@ class AuthRepoImpl implements AuthRepository {
 
   @override
   Future signUp(UserEntity userEntity) async {
-    return await _remoteDataSource.signUp(userEntity);
+    try {
+      return await _remoteDataSource.signUp(userEntity);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -55,5 +67,10 @@ class AuthRepoImpl implements AuthRepository {
   @override
   Future signOut() async {
     return await _remoteDataSource.signOut();
+  }
+
+  @override
+  Future<String> uploadImage(File imageFile) async {
+    return await _remoteDataSource.uploadImage(imageFile);
   }
 }

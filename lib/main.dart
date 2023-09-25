@@ -12,6 +12,7 @@ import 'package:clean_arch_chat/auth/domain/usecases/create_user.dart';
 import 'package:clean_arch_chat/auth/domain/usecases/forget_password.dart';
 import 'package:clean_arch_chat/auth/domain/usecases/sign_in.dart';
 import 'package:clean_arch_chat/auth/domain/usecases/sign_up.dart';
+import 'package:clean_arch_chat/auth/domain/usecases/upload_image.dart';
 import 'package:clean_arch_chat/auth/presentation/manager/credential/credential_cubit.dart';
 import 'package:clean_arch_chat/firebase_options.dart';
 import 'package:clean_arch_chat/utils/routes/routes.dart';
@@ -106,6 +107,7 @@ class MyApp extends StatelessWidget {
                 signUp: sl<SignUpUseCase>(),
                 forgetPassword: sl<ForgetPasswordUseCase>(),
                 createUser: sl<CreateUserUseCase>(),
+                uploadImage: sl<UploadImageUseCase>(),
               ),
               child: MaterialApp(
                 scaffoldMessengerKey: Utils.messengerKey,

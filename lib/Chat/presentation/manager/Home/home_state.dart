@@ -57,3 +57,5 @@ class HomeSearchError extends HomeState {
 
   HomeSearchError(this.message);
 }
+
+class ChangePasswordVisibilityState extends HomeState {}

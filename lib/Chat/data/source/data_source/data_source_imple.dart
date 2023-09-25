@@ -29,6 +29,10 @@ class HomeDataSourceImpl implements HomeDataSource {
   @override
   Future signOut() async {
     await firebaseAuth.signOut();
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(firebaseAuth.currentUser!.uid)
+        .update({'isOnline': false, 'lastActive': DateTime.now()});
   }
 
   @override
@@ -86,21 +90,32 @@ class HomeDataSourceImpl implements HomeDataSource {
       sendTime: DateTime.now(),
       messageType: MessageType.text,
     ).toMap();
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(uId)
-        .collection('chats')
-        .doc(messageEntity.chatReceiverId)
-        .collection('messages')
-        .add(message);
-    //set receiver chat
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(messageEntity.chatReceiverId)
-        .collection('chats')
-        .doc(uId)
-        .collection('messages')
-        .add(message);
+
+    if (uId == messageEntity.chatReceiverId) {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(uId)
+          .collection('chats')
+          .doc(messageEntity.chatReceiverId)
+          .collection('messages')
+          .add(message);
+    } else {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(uId)
+          .collection('chats')
+          .doc(messageEntity.chatReceiverId)
+          .collection('messages')
+          .add(message);
+      //set receiver chat
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(messageEntity.chatReceiverId)
+          .collection('chats')
+          .doc(uId)
+          .collection('messages')
+          .add(message);
+    }
   }
 
   @override
@@ -164,16 +179,14 @@ class HomeDataSourceImpl implements HomeDataSource {
   }
 
   @override
-  searchUser(String? userName)async {
+  searchUser(String? userName) async {
     final userCollection = firebaseStore
         .collection('users')
         .where('name', isGreaterThanOrEqualTo: userName)
         .where('name', isLessThan: '${userName!}z');
     return userCollection.snapshots(includeMetadataChanges: true).map(
-            (querySnapshot) => querySnapshot.docs
+        (querySnapshot) => querySnapshot.docs
             .map((e) => UserModel.fromJson(e.data()))
             .toList());
   }
-
-
 }

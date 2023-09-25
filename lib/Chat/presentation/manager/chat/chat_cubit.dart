@@ -15,17 +15,17 @@ import 'package:meta/meta.dart';
 part 'chat_state.dart';
 
 class ChatCubit extends Cubit<ChatState> {
-  ChatCubit(
-      {required this.addText,
-      required this.addImage,
-      required this.uploadImage,
-      required this.getAllMessages,
-      })
-      : super(ChatInitial());
+  ChatCubit({
+    required this.addText,
+    required this.addImage,
+    required this.uploadImage,
+    required this.getAllMessages,
+  }) : super(ChatInitial());
   final AddTextMessageUseCase addText;
   final AddImageMessageUseCase addImage;
   final UploadImageProfileUseCase uploadImage;
   final GetAllMessagesUseCase getAllMessages;
+
   static ChatCubit get(context) => BlocProvider.of(context);
   var picker = ImagePicker();
 
@@ -34,6 +34,8 @@ class ChatCubit extends Cubit<ChatState> {
       emit(ChatAddTextMessageLoading());
       await addText.call(message);
       emit(ChatAddTextMessageSuccess());
+    } on SocketException catch (e) {
+      emit(ChatAddTextMessageError(e.toString()));
     } catch (e) {
       emit(ChatAddTextMessageError(e.toString()));
     }
@@ -64,21 +66,28 @@ class ChatCubit extends Cubit<ChatState> {
         );
         emit(ChatUploadImageSuccess());
       } else {
-        emit(ChatUploadImageError(Utils.showSnackBar('No image selected',)));
+        emit(ChatUploadImageError(Utils.showSnackBar(
+          'No image selected',
+        )));
       }
+    } on SocketException catch (e) {
+      emit(ChatUploadImageError(e.toString()));
     } catch (e) {
       emit(ChatUploadImageError(e.toString()));
     }
   }
 
-  List<MessageEntity>message=[];
+  List<MessageEntity> message = [];
+
   getMessages(String receiverId) async {
     try {
       emit(ChatGetAllMessagesLoading());
       getAllMessages(receiverId).listen((List<MessageEntity> newMessages) {
         message = newMessages;
         emit(ChatGetAllMessagesSuccess());
-    });
+      });
+    } on SocketException catch (e) {
+      emit(ChatGetAllMessagesError(e.toString()));
     } catch (e) {
       print(e.toString());
       emit(ChatGetAllMessagesError(e.toString()));

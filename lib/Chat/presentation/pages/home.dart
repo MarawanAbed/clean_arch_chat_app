@@ -1,7 +1,6 @@
 import 'package:clean_arch_chat/Chat/presentation/manager/Home/home_cubit.dart';
 import 'package:clean_arch_chat/Chat/presentation/widgets/profile.dart';
 import 'package:clean_arch_chat/Chat/presentation/widgets/users.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -75,8 +74,8 @@ class _HomeScreenState extends State<HomeScreen>
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              FirebaseAuth.instance.signOut();
+            onPressed: () async {
+              await HomeCubit.get(context).signOutMethod();
               Navigator.pushNamed(context, '/auth');
             },
             icon: const Icon(Icons.logout),

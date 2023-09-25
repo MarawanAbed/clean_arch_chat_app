@@ -1,6 +1,9 @@
 import 'dart:io';
 
 import 'package:clean_arch_chat/Chat/presentation/manager/Home/home_cubit.dart';
+import 'package:clean_arch_chat/utils/common/common.dart';
+import 'package:clean_arch_chat/utils/constant/constant.dart';
+import 'package:clean_arch_chat/utils/services/show_snack_message.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,6 +19,8 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
   File? selectedImage;
 
   @override
@@ -23,12 +28,16 @@ class _ProfileState extends State<Profile> {
     final cubit = HomeCubit.get(context);
     cubit.getSingleUserMethod(FirebaseAuth.instance.currentUser!.uid);
     nameController.text = cubit.userEntity!.userName ?? '';
+    emailController.text = cubit.userEntity!.userEmail ?? '';
+    passwordController.text = cubit.userEntity!.userPassword ?? '';
     super.initState();
   }
 
   @override
   void dispose() {
     nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 
@@ -39,64 +48,86 @@ class _ProfileState extends State<Profile> {
         if (state is HomeUpdateUserLoading) {
           return const Center(child: CircularProgressIndicator());
         }
+        if (state is HomeUpdateUserError) {
+          return Utils.showSnackBar(state.message);
+        }
+        if (state is HomeGetSingleUserError) {
+          return Utils.showSnackBar(state.message);
+        }
         var cubit = HomeCubit.get(context);
         final userImageProvider = cubit.profileImage != null
             ? FileImage(cubit.profileImage!)
             : NetworkImage(cubit.userEntity!.userImage!);
-        return Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 50,
-                backgroundImage: userImageProvider as ImageProvider<Object>?,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              TextButton(
-                onPressed: () {
-                  cubit.getProfileImage();
-                },
-                child: const Text(
-                  'Change Profile Picture',
-                  style: TextStyle(color: Colors.blue),
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 50,
+                  backgroundImage: userImageProvider as ImageProvider<Object>?,
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              TextField(
-                controller: nameController,
-                keyboardType: TextInputType.name,
-                decoration: const InputDecoration(
+                const SizedBox(
+                  height: 10,
+                ),
+                TextButton(
+                  onPressed: () {
+                    cubit.getProfileImage();
+                  },
+                  child: const Text(
+                    'Change Profile Picture',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                // TextField(
+                //   controller: nameController,
+                //   keyboardType: TextInputType.name,
+                //   decoration: const InputDecoration(
+                //     labelText: 'Name',
+                //     prefixIcon: Icon(Icons.person),
+                //     border: OutlineInputBorder(),
+                //   ),
+                // ),
+                AuthFormField(
                   labelText: 'Name',
-                  prefixIcon: Icon(Icons.person),
-                  border: OutlineInputBorder(),
+                  prefixIcon: Icons.person,
+                  controller: nameController,
+                  keyboardType: TextInputType.name,
                 ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Container(
-                width: double.infinity,
-                height: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: Colors.blue,
+                const SizedBox(
+                  height: 20,
                 ),
-                child: MaterialButton(
+                AuthFormField(
+                  labelText: 'Password',
+                  prefixIcon: Icons.lock,
+                  controller: passwordController,
+                  keyboardType: TextInputType.visiblePassword,
+                  obscureText: cubit.isVisible,
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      cubit.changePasswordVisibility();
+                    },
+                    icon: Icon(
+                      cubit.isVisible ? Icons.visibility : Icons.visibility_off,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                buildMyButton(
+                  label: 'Update Profile',
+                  color: kPrimaryColor,
                   onPressed: () {
                     _updateProfile(context);
                   },
-                  child: const Text(
-                    'Update',
-                    style: TextStyle(color: Colors.white),
-                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -106,18 +137,38 @@ class _ProfileState extends State<Profile> {
   void _updateProfile(BuildContext context) async {
     final cubit = HomeCubit.get(context);
     final userName = nameController.text;
+    final email = emailController.text;
+    final password = passwordController.text;
 
-    if (userName.isNotEmpty) {
-      if (cubit.profileImage != null) {
+    final isNewImageSelected = cubit.profileImage != null;
+
+    if (userName.isNotEmpty && email.isNotEmpty && password.isNotEmpty) {
+      if (isNewImageSelected) {
         // Update the profile with the selected image and name
         await cubit.updateProfile(
-            name: userName, imageFile: cubit.profileImage!);
+          name: userName,
+          imageFile: cubit.profileImage!,
+          password: password,
+        );
       } else {
-        // No new image selected, update the user's profile without changing the image
-        await cubit.updateData({
-          'name': userName,
-        });
+        if (password.isNotEmpty) {
+          try {
+            // Update the user's password
+            await FirebaseAuth.instance.currentUser!.updatePassword(password);
+            print('Password updated successfully');
+          } catch (e) {
+            // Handle password update error
+            Utils.showSnackBar('Password update failed: $e');
+          }
+        }
       }
+      await cubit.updateData({
+        'name': userName,
+        'password': password,
+        'lastActive': DateTime.now(),
+      });
+    } else {
+      Utils.showSnackBar('Please enter your data');
     }
   }
 }

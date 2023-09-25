@@ -1,6 +1,7 @@
 import 'package:clean_arch_chat/auth/domain/entities/user_entity.dart';
 import 'package:clean_arch_chat/auth/presentation/manager/credential/credential_cubit.dart';
-import 'package:clean_arch_chat/auth/presentation/widgets/text_field.dart';
+import 'package:clean_arch_chat/auth/presentation/widgets/auth_row.dart';
+import 'package:clean_arch_chat/utils/common/common.dart';
 import 'package:clean_arch_chat/utils/constant/constant.dart';
 import 'package:clean_arch_chat/utils/services/show_snack_message.dart';
 import 'package:flutter/material.dart';
@@ -14,13 +15,13 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  var emailController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
 
-  var userNameController = TextEditingController();
+  final TextEditingController userNameController = TextEditingController();
 
-  var passwordController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
-  var formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -38,6 +39,9 @@ class _SignUpState extends State<SignUp> {
           const Center(child: CircularProgressIndicator());
         }
         if (state is SignUpError) {
+          Utils.showSnackBar(state.message);
+        }
+        if (state is UploadImageError) {
           Utils.showSnackBar(state.message);
         }
       },
@@ -71,6 +75,28 @@ class _SignUpState extends State<SignUp> {
                       ),
                       const SizedBox(
                         height: 30,
+                      ),
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.grey[300],
+                        backgroundImage: cubit.profileImage == null
+                            ? null
+                            : FileImage(cubit.profileImage!),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          await cubit.pickedImage();
+                        },
+                        child: Text(
+                          'Choose Profile Picture',
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
                       ),
                       AuthFormField(
                         labelText: 'User Name',
@@ -123,65 +149,39 @@ class _SignUpState extends State<SignUp> {
                       const SizedBox(
                         height: 30,
                       ),
-                      MaterialButton(
-                        onPressed: () {
-                          if (formKey.currentState!.validate()) {
-                            cubit.signUpMethod(
-                              UserEntity(
-                                userPassword: passwordController.text,
-                                userName: userNameController.text,
-                                userEmail: emailController.text,
-                                userImage:
-                                    'https://image.freepik.com/free-photo/photo-attractive-bearded-young-man-with-cherful-expression-makes-okay-gesture-with-both-hands-likes-something-dressed-red-casual'
-                                        '-t-shirt-poses-against-white-wall-gestures-indoor_273609-16239.jpg',
-                                userLastActive: DateTime.now(),
-                                userIsOnline: true,
-                              ),
-                            );
-                          }
-                        },
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30)),
-                        color: kPrimaryColor,
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Sign Up',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 20),
-                            ),
-                          ],
-                        ),
-                      ),
+                      buildMyButton(
+                          height: 45.0,
+                          label: 'Sign Up',
+                          color: kPrimaryColor,
+                          onPressed: () async {
+                            if (formKey.currentState!.validate()) {
+                              if (cubit.profileImage != null) {
+                                await cubit
+                                    .uploadImageMethod(cubit.profileImage!);
+                                if (cubit.imageUrl != null) {
+                                  final userEntity = UserEntity(
+                                    userEmail: emailController.text,
+                                    userPassword: passwordController.text,
+                                    userName: userNameController.text,
+                                    userImage: cubit.imageUrl!,
+                                  );
+                                  await cubit.signUpMethod(userEntity);
+                                }
+                              } else {
+                                Utils.showSnackBar(
+                                    'Please choose your profile image');
+                              }
+                            }
+                          }),
                       const SizedBox(
                         height: 10,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'have an account? ',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.secondary,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/signIn');
-                            },
-                            child: Text(
-                              'Sign In ',
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                            ),
-                          ),
-                        ],
+                      BuildAuthRow(
+                        body: 'Already have an account?',
+                        label: 'Sign In',
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/signIn');
+                        },
                       ),
                     ],
                   ),

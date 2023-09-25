@@ -1,3 +1,4 @@
+import 'package:clean_arch_chat/utils/common/common.dart';
 import 'package:clean_arch_chat/utils/constant/constant.dart';
 import 'package:flutter/material.dart';
 
@@ -17,42 +18,24 @@ class AuthScreen extends StatelessWidget {
               const SizedBox(
                 height: 60,
               ),
-              MaterialButton(
+              buildMyButton(
+                height: 50.0,
+                label: 'Sign In',
+                color: kPrimaryColor,
                 onPressed: () {
                   Navigator.pushNamed(context, '/signIn');
                 },
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)),
-                color: kPrimaryColor,
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Sign In',
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                  ],
-                ),
               ),
               const SizedBox(
                 height: 30,
               ),
-              MaterialButton(
+              buildMyButton(
+                height: 50.0,
+                label: 'Sign Up',
+                color: kSecondaryColor,
                 onPressed: () {
                   Navigator.pushNamed(context, '/signUp');
                 },
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)),
-                color: kSecondaryColor,
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Sign Up',
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                  ],
-                ),
               ),
             ],
           ),

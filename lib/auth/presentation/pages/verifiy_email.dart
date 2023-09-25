@@ -3,6 +3,7 @@ import 'package:clean_arch_chat/auth/domain/usecases/is_email_verified.dart';
 import 'package:clean_arch_chat/auth/domain/usecases/send_email_verification.dart';
 import 'package:clean_arch_chat/auth/domain/usecases/sign_out.dart';
 import 'package:clean_arch_chat/auth/presentation/manager/credential/verify/verify_cubit.dart';
+import 'package:clean_arch_chat/auth/presentation/widgets/elevation_button.dart';
 import 'package:clean_arch_chat/utils/constant/constant.dart';
 import 'package:clean_arch_chat/utils/services/services_locator.dart';
 import 'package:clean_arch_chat/utils/services/show_snack_message.dart';
@@ -58,28 +59,22 @@ class VerifyEmailScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        cubit.sendVerificationEmail();
-                      },
-                      icon: const Icon(Icons.email),
-                      label: const Text(
-                        'Resend Email',
-                        style: TextStyle(fontSize: 24),
-                      ),
-                    ),
+                    ElevationVerification(
+                        onPressed: () {
+                          cubit.sendVerificationEmail();
+                          Utils.showSnackBar('Email sent');
+                        },
+                        label: 'Resend Email',
+                        icon: Icons.email_outlined),
                     const SizedBox(height: 20),
-                    ElevatedButton.icon(
+                    ElevationVerification(
+                      icon: Icons.close,
                       onPressed: () {
                         cubit.signOutMethod();
                         Navigator.of(context)
                             .pop(); // Navigate back to the previous screen.
                       },
-                      icon: const Icon(Icons.close),
-                      label: const Text(
-                        'Cancel',
-                        style: TextStyle(fontSize: 24),
-                      ),
+                      label: 'Cancel',
                     ),
                   ],
                 ),

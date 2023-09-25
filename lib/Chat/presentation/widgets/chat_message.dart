@@ -1,5 +1,6 @@
 import 'package:clean_arch_chat/Chat/presentation/manager/chat/chat_cubit.dart';
 import 'package:clean_arch_chat/Chat/presentation/widgets/messageBubble.dart';
+import 'package:clean_arch_chat/utils/services/show_snack_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,7 +14,6 @@ class ChatMessage extends StatefulWidget {
 }
 
 class _ChatMessageState extends State<ChatMessage> {
-
   @override
   void initState() {
     final cubit = ChatCubit.get(context);
@@ -25,6 +25,9 @@ class _ChatMessageState extends State<ChatMessage> {
   Widget build(BuildContext context) {
     return BlocBuilder<ChatCubit, ChatState>(
       builder: (context, state) {
+        if (state is ChatGetAllMessagesError) {
+          return Utils.showSnackBar(state.error);
+        }
         var cubit = ChatCubit.get(context);
         return ListView.builder(
           itemBuilder: (BuildContext context, int index) {
@@ -44,4 +47,3 @@ class _ChatMessageState extends State<ChatMessage> {
     );
   }
 }
-

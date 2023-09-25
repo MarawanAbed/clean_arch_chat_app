@@ -1,6 +1,7 @@
 import 'package:clean_arch_chat/auth/domain/entities/user_entity.dart';
 import 'package:clean_arch_chat/auth/presentation/manager/credential/credential_cubit.dart';
-import 'package:clean_arch_chat/auth/presentation/widgets/text_field.dart';
+import 'package:clean_arch_chat/auth/presentation/widgets/auth_row.dart';
+import 'package:clean_arch_chat/utils/common/common.dart';
 import 'package:clean_arch_chat/utils/constant/constant.dart';
 import 'package:clean_arch_chat/utils/services/show_snack_message.dart';
 import 'package:flutter/material.dart';
@@ -87,9 +88,11 @@ class _SignInState extends State<SignIn> {
                         prefixIcon: Icons.lock,
                         obscureText: cubit.isVisible,
                         controller: passwordController,
-                        suffixIcon: IconButton(onPressed: (){
-                          cubit.changePasswordVisibility();
-                        }, icon: Icon(cubit.suffix)),
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              cubit.changePasswordVisibility();
+                            },
+                            icon: Icon(cubit.suffix)),
                         keyboardType: TextInputType.visiblePassword,
                         validator: (value) {
                           if (value!.isEmpty) {
@@ -101,29 +104,18 @@ class _SignInState extends State<SignIn> {
                       const SizedBox(
                         height: 30,
                       ),
-                      MaterialButton(
+                      buildMyButton(
+                        height: 45.0,
+                        label: 'Sign In',
+                        color: kPrimaryColor,
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
-                            BlocProvider.of<CredentialCubit>(context)
-                                .signInMethod(UserEntity(
+                            cubit.signInMethod(UserEntity(
                               userEmail: emailController.text,
                               userPassword: passwordController.text,
                             ));
                           }
                         },
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30)),
-                        color: kPrimaryColor,
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Sign In',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 20),
-                            ),
-                          ],
-                        ),
                       ),
                       const SizedBox(
                         height: 10,
@@ -154,31 +146,12 @@ class _SignInState extends State<SignIn> {
                         height: 1,
                         color: Colors.grey,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Don\'t have an account? ',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.secondary,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/signUp');
-                            },
-                            child: Text(
-                              'Sign Up ',
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                            ),
-                          ),
-                        ],
+                      BuildAuthRow(
+                        label: 'Sign In',
+                        body: 'Don\'t have an account?',
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/signUp');
+                        },
                       ),
                     ],
                   ),

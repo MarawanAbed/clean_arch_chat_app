@@ -18,19 +18,16 @@ import 'package:clean_arch_chat/auth/data/source/remote_data_source/remote_data_
 import 'package:clean_arch_chat/auth/domain/repositories/repo.dart';
 import 'package:clean_arch_chat/auth/domain/usecases/create_user.dart';
 import 'package:clean_arch_chat/auth/domain/usecases/current_user_id.dart';
-
 import 'package:clean_arch_chat/auth/domain/usecases/forget_password.dart';
 import 'package:clean_arch_chat/auth/domain/usecases/is_email_verified.dart';
 import 'package:clean_arch_chat/auth/domain/usecases/send_email_verification.dart';
-
 import 'package:clean_arch_chat/auth/domain/usecases/sign_in.dart';
 import 'package:clean_arch_chat/auth/domain/usecases/sign_out.dart';
 import 'package:clean_arch_chat/auth/domain/usecases/sign_up.dart';
-
+import 'package:clean_arch_chat/auth/domain/usecases/upload_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
-
 
 final sl = GetIt.instance;
 
@@ -41,13 +38,18 @@ Future<void> init() async {
   sl.registerLazySingleton<CreateUserUseCase>(
       () => CreateUserUseCase(sl.call()));
   sl.registerLazySingleton<SignUpUseCase>(() => SignUpUseCase(sl.call()));
-  sl.registerLazySingleton<IsEmailVerificationUseCase>(() => IsEmailVerificationUseCase(sl.call()));
-  sl.registerLazySingleton<SendEmailVerificationUseCase>(() => SendEmailVerificationUseCase(sl.call()));
+  sl.registerLazySingleton<IsEmailVerificationUseCase>(
+      () => IsEmailVerificationUseCase(sl.call()));
+  sl.registerLazySingleton<SendEmailVerificationUseCase>(
+      () => SendEmailVerificationUseCase(sl.call()));
   sl.registerLazySingleton<SignInUseCase>(() => SignInUseCase(sl.call()));
   sl.registerLazySingleton<SignOutUseCase>(() => SignOutUseCase(sl.call()));
-  sl.registerLazySingleton<HomeSignOutUseCase>(() => HomeSignOutUseCase(sl.call()));
-  sl.registerLazySingleton<GetAllUserUseCase>(() => GetAllUserUseCase(sl.call()));
-  sl.registerLazySingleton<UpdateUserUseCase>(() => UpdateUserUseCase(sl.call()));
+  sl.registerLazySingleton<HomeSignOutUseCase>(
+      () => HomeSignOutUseCase(sl.call()));
+  sl.registerLazySingleton<GetAllUserUseCase>(
+      () => GetAllUserUseCase(sl.call()));
+  sl.registerLazySingleton<UpdateUserUseCase>(
+      () => UpdateUserUseCase(sl.call()));
   sl.registerLazySingleton<ForgetPasswordUseCase>(
       () => ForgetPasswordUseCase(sl.call()));
 
@@ -57,18 +59,25 @@ Future<void> init() async {
   //remote data source
   sl.registerLazySingleton<AuthRemoteDataSource>(
       () => AuthRemoteDataSourceImpl(fireStore: sl.call(), auth: sl.call()));
-  sl.registerLazySingleton<HomeDataSource>(
-      () => HomeDataSourceImpl(firebaseStore: sl.call(), firebaseAuth: sl.call()));
+  sl.registerLazySingleton<HomeDataSource>(() =>
+      HomeDataSourceImpl(firebaseStore: sl.call(), firebaseAuth: sl.call()));
   sl.registerLazySingleton<HomeCurrentUserIdUseCase>(
-          () => HomeCurrentUserIdUseCase(sl.call()));
+      () => HomeCurrentUserIdUseCase(sl.call()));
   sl.registerLazySingleton<UploadImageProfileUseCase>(
-          () => UploadImageProfileUseCase(sl.call()));
-  sl.registerLazySingleton<AddTextMessageUseCase>(() => AddTextMessageUseCase(sl.call()));
-  sl.registerLazySingleton<AddImageMessageUseCase>(() => AddImageMessageUseCase(sl.call()));
-  sl.registerLazySingleton<GetAllMessagesUseCase>(() => GetAllMessagesUseCase(sl.call()));
-  sl.registerLazySingleton<SearchUserUseCases>(() => SearchUserUseCases(sl.call()));
+      () => UploadImageProfileUseCase(sl.call()));
+  sl.registerLazySingleton<AddTextMessageUseCase>(
+      () => AddTextMessageUseCase(sl.call()));
+  sl.registerLazySingleton<AddImageMessageUseCase>(
+      () => AddImageMessageUseCase(sl.call()));
+  sl.registerLazySingleton<GetAllMessagesUseCase>(
+      () => GetAllMessagesUseCase(sl.call()));
+  sl.registerLazySingleton<UploadImageUseCase>(
+      () => UploadImageUseCase(sl.call()));
+
+  sl.registerLazySingleton<SearchUserUseCases>(
+      () => SearchUserUseCases(sl.call()));
   sl.registerLazySingleton<GetSingleUserUseCase>(
-          () => GetSingleUserUseCase(sl.call()));
+      () => GetSingleUserUseCase(sl.call()));
   //external
   final auth = FirebaseAuth.instance;
   final fireStore = FirebaseFirestore.instance;

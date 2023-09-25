@@ -1,5 +1,6 @@
 import 'package:clean_arch_chat/Chat/presentation/manager/Home/home_cubit.dart';
 import 'package:clean_arch_chat/Chat/presentation/widgets/user_item.dart';
+import 'package:clean_arch_chat/utils/services/show_snack_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -39,9 +40,7 @@ class _UsersState extends State<Users> {
           );
         }
         if (state is HomeGetAllUserError) {
-          return const Center(
-            child: Text('Error'),
-          );
+          return Utils.showSnackBar(state.message);
         }
         return SingleChildScrollView(
           child: Column(

@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:clean_arch_chat/auth/domain/usecases/is_email_verified.dart';
 import 'package:clean_arch_chat/auth/domain/usecases/send_email_verification.dart';
 import 'package:clean_arch_chat/auth/domain/usecases/sign_out.dart';
+import 'package:clean_arch_chat/utils/services/show_snack_message.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
@@ -19,9 +21,12 @@ class VerificationCubit extends Cubit<VerificationState> {
   Future<void> sendVerificationEmail() async {
     try {
       await sendEmailVerification.call();
-      print('Email verification email sent.');
+      Utils.showSnackBar('Verification email sent.');
       startEmailVerificationTimer();
-    } catch (e) {
+    }on SocketException catch (e) {
+      emit(VerificationError(e.toString()));
+    }
+    catch (e) {
       emit(VerificationError(e.toString()));
     }
   }

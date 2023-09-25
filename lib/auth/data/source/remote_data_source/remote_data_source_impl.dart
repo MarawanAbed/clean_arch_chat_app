@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:clean_arch_chat/auth/data/models/user_model.dart';
 import 'package:clean_arch_chat/auth/data/source/remote_data_source/remote_data_source.dart';
 import 'package:clean_arch_chat/auth/domain/entities/user_entity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final FirebaseFirestore fireStore;
@@ -17,7 +19,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future createUser(UserEntity userEntity) async {
     final userCollection = fireStore.collection('users');
     final uId = await currentUserId();
-
     userCollection.doc(uId).get().then((value) {
       final user = UserModel(
         uId: uId,
@@ -39,7 +40,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future signIn(UserEntity userEntity) async {
     await auth.signInWithEmailAndPassword(
-        email: userEntity.userEmail!, password: userEntity.userPassword!);
+      email: userEntity.userEmail!,
+      password: userEntity.userPassword!,
+    );
     await FirebaseFirestore.instance
         .collection('users')
         .doc(auth.currentUser!.uid)
@@ -59,7 +62,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future currentUserId() async => auth.currentUser!.uid;
-
 
   @override
   Future<bool> isEmailVerified() async {
@@ -83,10 +85,24 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future signOut()async {
+  Future signOut() async {
     return await auth.signOut();
   }
 
-
-
+  @override
+  Future<String> uploadImage(File imageFile) async {
+    try {
+      final Reference storageReference = FirebaseStorage.instance
+          .ref()
+          .child('profile_images/${DateTime.now().millisecondsSinceEpoch}');
+      final UploadTask uploadTask = storageReference.putFile(imageFile);
+      final TaskSnapshot taskSnapshot =
+          await uploadTask.whenComplete(() => null);
+      final imageUrl = await taskSnapshot.ref.getDownloadURL();
+      return imageUrl;
+    } catch (e) {
+      print('Image upload error: $e');
+      throw Exception('Failed to upload image');
+    }
+  }
 }

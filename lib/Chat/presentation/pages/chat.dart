@@ -59,14 +59,12 @@ class _ChatScreenState extends State<ChatScreen> {
                 receiverId: widget.model.userUId!,
               ),
             ),
-             ChatTextField(
-               receiverId: widget.model.userUId!,
-             ),
+            ChatTextField(
+              receiverId: widget.model.userUId!,
+            ),
           ],
         ),
       ),
     );
   }
-
-
 }

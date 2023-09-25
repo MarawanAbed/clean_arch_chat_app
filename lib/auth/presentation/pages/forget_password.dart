@@ -1,5 +1,5 @@
 import 'package:clean_arch_chat/auth/presentation/manager/credential/credential_cubit.dart';
-import 'package:clean_arch_chat/auth/presentation/widgets/text_field.dart';
+import 'package:clean_arch_chat/utils/common/common.dart';
 import 'package:clean_arch_chat/utils/constant/constant.dart';
 import 'package:clean_arch_chat/utils/services/show_snack_message.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +15,7 @@ class ForgetPassword extends StatefulWidget {
 class _ForgetPasswordState extends State<ForgetPassword> {
   var emailController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   @override
   void dispose() {
     emailController.dispose();
@@ -28,8 +29,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
         if (state is ForgetPasswordError) {
           Utils.showSnackBar(state.message);
         }
-        if(state is ForgetPasswordSuccess)
-        {
+        if (state is ForgetPasswordSuccess) {
           Utils.showSnackBar('Check your email');
         }
         if (state is ForgetPasswordLoading) {
@@ -37,7 +37,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
         }
       },
       builder: (context, state) {
-        var cubit=BlocProvider.of<CredentialCubit>(context);
+        var cubit = BlocProvider.of<CredentialCubit>(context);
         return Scaffold(
           body: Form(
             key: formKey,
@@ -53,8 +53,8 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                       ),
                       const Text(
                         'Forget Password',
-                        style: TextStyle(fontWeight: FontWeight.bold,
-                            fontSize: 20),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
                       ),
                       const SizedBox(
                         height: 30,
@@ -91,8 +91,10 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                         },
                         child: const Text(
                           'Reset Password',
-                          style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                       const SizedBox(
@@ -104,8 +106,8 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                         },
                         child: const Text(
                           'Go back',
-                          style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       )
                     ],
