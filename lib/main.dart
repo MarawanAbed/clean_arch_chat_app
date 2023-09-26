@@ -22,11 +22,16 @@ import 'package:clean_arch_chat/utils/services/show_snack_message.dart';
 import 'package:clean_arch_chat/utils/theme/theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Chat/domain/usecases/sign_out.dart';
+
+Future<void> _backGroundMessageHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +39,8 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await init();
+  await FirebaseMessaging.instance.getInitialMessage();
+  FirebaseMessaging.onBackgroundMessage(_backGroundMessageHandler);
   Bloc.observer = MyBlocObserver();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool hasShownSplash = prefs.getBool('hasShownSplash') ?? false;

@@ -1,6 +1,7 @@
 import 'package:clean_arch_chat/Chat/domain/entities/message_entity.dart';
 import 'package:clean_arch_chat/Chat/presentation/manager/chat/chat_cubit.dart';
 import 'package:clean_arch_chat/utils/common/common.dart';
+import 'package:clean_arch_chat/utils/services/notification_services.dart';
 import 'package:clean_arch_chat/utils/services/show_snack_message.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,12 @@ class ChatTextField extends StatefulWidget {
 
 class _ChatTextFieldState extends State<ChatTextField> {
   var messageController = TextEditingController();
-
+  static final notificationServices = NotificationServices();
+  @override
+  void initState() {
+    notificationServices.getReceiverToken(widget.receiverId);
+    super.initState();
+  }
   @override
   void dispose() {
     messageController.dispose();
@@ -85,6 +91,10 @@ class _ChatTextFieldState extends State<ChatTextField> {
           chatSendTime: DateTime.now(),
           chatMessageType: MessageType.text,
         ),
+      );
+      await notificationServices.sendNotification(
+        body: messageContent,
+        senderId: FirebaseAuth.instance.currentUser!.uid,
       );
       messageController.clear();
       FocusScope.of(context).unfocus();

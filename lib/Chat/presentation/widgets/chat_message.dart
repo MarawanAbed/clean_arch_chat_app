@@ -14,6 +14,7 @@ class ChatMessage extends StatefulWidget {
 }
 
 class _ChatMessageState extends State<ChatMessage> {
+
   @override
   void initState() {
     final cubit = ChatCubit.get(context);

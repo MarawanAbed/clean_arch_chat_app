@@ -1,5 +1,6 @@
 import 'package:clean_arch_chat/Chat/presentation/manager/Home/home_cubit.dart';
 import 'package:clean_arch_chat/Chat/presentation/widgets/user_item.dart';
+import 'package:clean_arch_chat/utils/services/notification_services.dart';
 import 'package:clean_arch_chat/utils/services/show_snack_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +16,7 @@ class Users extends StatefulWidget {
 
 class _UsersState extends State<Users> {
   bool _dataLoaded = false; // Add this flag
-
+  static final notificationServices = NotificationServices();
   @override
   void initState() {
     final cubit = HomeCubit.get(context);
@@ -25,6 +26,7 @@ class _UsersState extends State<Users> {
       cubit.getUserData();
       _dataLoaded = true; // Set the flag to true after loading data
     }
+    notificationServices.firebaseNotification(context);
     super.initState();
   }
 

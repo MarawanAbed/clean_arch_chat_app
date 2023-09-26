@@ -18,7 +18,6 @@ class _SignInState extends State<SignIn> {
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   var formKey = GlobalKey<FormState>();
-
   @override
   void dispose() {
     emailController.dispose();
@@ -108,7 +107,7 @@ class _SignInState extends State<SignIn> {
                         height: 45.0,
                         label: 'Sign In',
                         color: kPrimaryColor,
-                        onPressed: () {
+                        onPressed: ()async {
                           if (formKey.currentState!.validate()) {
                             cubit.signInMethod(UserEntity(
                               userEmail: emailController.text,

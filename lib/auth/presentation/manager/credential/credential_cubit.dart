@@ -6,6 +6,7 @@ import 'package:clean_arch_chat/auth/domain/usecases/forget_password.dart';
 import 'package:clean_arch_chat/auth/domain/usecases/sign_in.dart';
 import 'package:clean_arch_chat/auth/domain/usecases/sign_up.dart';
 import 'package:clean_arch_chat/auth/domain/usecases/upload_image.dart';
+import 'package:clean_arch_chat/utils/services/notification_services.dart';
 import 'package:clean_arch_chat/utils/services/show_snack_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,6 +29,7 @@ class CredentialCubit extends Cubit<CredentialState> {
   final CreateUserUseCase createUser;
   bool isVisible = true;
   IconData suffix = Icons.visibility_outlined;
+  static final notification=NotificationServices();
 
   static CredentialCubit get(context) => BlocProvider.of(context);
 
@@ -35,6 +37,8 @@ class CredentialCubit extends Cubit<CredentialState> {
     emit(SignInLoading());
     try {
       await signIn.call(user);
+      await notification.requestPermission();
+      await notification.getToken();
       emit(SignUpSuccess());
     } on SocketException catch (e) {
       emit(SignInError(e.toString()));
@@ -48,6 +52,8 @@ class CredentialCubit extends Cubit<CredentialState> {
     try {
       await signUp.call(user);
       await createUser.call(user);
+      await notification.requestPermission();
+      await notification.getToken();
       emit(SignUpSuccess());
     } on SocketException catch (e) {
       emit(SignUpError(e.toString()));

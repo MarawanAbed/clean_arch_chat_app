@@ -6,6 +6,7 @@ import 'package:clean_arch_chat/Chat/domain/usecases/add_text_message.dart';
 import 'package:clean_arch_chat/Chat/domain/usecases/get_all_message.dart';
 import 'package:clean_arch_chat/Chat/domain/usecases/upload_image_profile.dart';
 import 'package:clean_arch_chat/utils/common/common.dart';
+import 'package:clean_arch_chat/utils/services/notification_services.dart';
 import 'package:clean_arch_chat/utils/services/show_snack_message.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,7 +26,7 @@ class ChatCubit extends Cubit<ChatState> {
   final AddImageMessageUseCase addImage;
   final UploadImageProfileUseCase uploadImage;
   final GetAllMessagesUseCase getAllMessages;
-
+  static final notificationServices = NotificationServices();
   static ChatCubit get(context) => BlocProvider.of(context);
   var picker = ImagePicker();
 
@@ -63,6 +64,10 @@ class ChatCubit extends Cubit<ChatState> {
             chatSendTime: DateTime.now(),
             chatMessageType: MessageType.imageType,
           ),
+        );
+        await notificationServices.sendNotification(
+          body: 'image........',
+          senderId: FirebaseAuth.instance.currentUser!.uid,
         );
         emit(ChatUploadImageSuccess());
       } else {
