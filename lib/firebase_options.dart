@@ -53,6 +53,7 @@ class DefaultFirebaseOptions {
     projectId: 'clean-arch-chat',
     authDomain: 'clean-arch-chat.firebaseapp.com',
     storageBucket: 'clean-arch-chat.appspot.com',
+    measurementId: 'G-P9HXDT1FQQ',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -69,6 +70,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '881636060815',
     projectId: 'clean-arch-chat',
     storageBucket: 'clean-arch-chat.appspot.com',
+    iosClientId: '881636060815-7stlk2hpv01b8uv1gmalq16incne1kot.apps.googleusercontent.com',
     iosBundleId: 'com.example.cleanArchChat',
   );
 }
