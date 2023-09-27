@@ -29,8 +29,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Chat/domain/usecases/sign_out.dart';
 
-Future<void> _backGroundMessageHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 }
 
 void main() async {
@@ -40,7 +42,10 @@ void main() async {
   );
   await init();
   await FirebaseMessaging.instance.getInitialMessage();
-  FirebaseMessaging.onBackgroundMessage(_backGroundMessageHandler);
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onMessage.listen((message) async {
+    Utils.showSnackBar(message.notification!.body!);
+  });
   Bloc.observer = MyBlocObserver();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool hasShownSplash = prefs.getBool('hasShownSplash') ?? false;
@@ -49,11 +54,16 @@ void main() async {
   ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key, required this.hasShownSplash});
 
   final bool hasShownSplash;
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -123,7 +133,7 @@ class MyApp extends StatelessWidget {
                 theme: lightThemeData(context),
                 darkTheme: darkThemeData(context),
                 themeMode: ThemeMode.system,
-                initialRoute: hasShownSplash ? '/auth' : '/',
+                initialRoute: widget.hasShownSplash ? '/auth' : '/',
                 onGenerateRoute: OnGenerateRoutes.route,
               ),
             );

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:clean_arch_chat/Chat/presentation/widgets/chat_message.dart';
+import 'package:clean_arch_chat/utils/services/show_snack_message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -13,54 +14,15 @@ class NotificationServices {
       'AAAAzUWaro8:APA91bFY-p3QIlEyAWJNqjQVPgRDFVFpj0aTNEsQb_OmA7ELGdWHGBS0Zzw106GnYzckrEbDX-Br_3gWAMbN_JzCTyXE0UKQgr8NOhGuR0RUWJjwR4pqUyRDgyVQHN0J287SqOfUGQrd';
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-  void _initLocalNotification() {
-    const androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-    const initializationSettings = InitializationSettings(
-      android: androidSettings,
-    );
-    flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveBackgroundNotificationResponse: (response) async {
-        debugPrint(response.payload.toString());
-      },
-    );
-  }
-
-  Future<void> _showLocalNotification(RemoteMessage message) async {
-    if (message.notification != null) {
-      final styleInformation = BigTextStyleInformation(
-        message.notification!.body.toString(),
-        // <-- Accessing notification without null check
-        htmlFormatBigText: true,
-        contentTitle: message.notification!.title,
-        // <-- Accessing notification without null check
-        htmlFormatTitle: true,
-      );
-      final notificationDetails = NotificationDetails(
-        android: AndroidNotificationDetails(
-          'com.example.clean_arch_chat.urgent',
-          'mychannelid',
-          importance: Importance.max,
-          styleInformation: styleInformation,
-          priority: Priority.max,
-        ),
-      );
-      await flutterLocalNotificationsPlugin.show(
-        0,
-        message.notification!.title,
-        message.notification!.body,
-        notificationDetails,
-        payload: message.data['body'],
-      );
-    } else {
-      // Handle the case where message.notification is null
-      // You can log an error or take other appropriate action here
-    }
+  void firebaseNotification(context) {
+    FirebaseMessaging.onMessageOpenedApp.listen((message) async {
+      await Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => ChatMessage(receiverId: message.data['senderId'])));
+    });
   }
 
   Future<void> requestPermission() async {
-    final message = FirebaseMessaging.instance;
+    final message = await FirebaseMessaging.instance;
     final settings = await message.requestPermission(
       alert: true,
       announcement: false,
@@ -103,21 +65,6 @@ class NotificationServices {
     receiverToken = await getToken.data()!['token'];
   }
 
-  void firebaseNotification(context) {
-    _initLocalNotification();
-    //background notification
-    FirebaseMessaging.onMessageOpenedApp.listen((message) async {
-      await Navigator.of(context).push(MaterialPageRoute(
-          builder: (_) => ChatMessage(
-                receiverId: message.data['senderId'],
-              )));
-    });
-
-    FirebaseMessaging.onMessage.listen((message) async {
-      await _showLocalNotification(message);
-    });
-  }
-
   Future<void> sendNotification(
       {required String body, required String senderId}) async {
     try {
@@ -135,7 +82,7 @@ class NotificationServices {
               "body": body,
               "title": "New Message",
             },
-            "date": <String, String>{
+            "data": <String, String>{
               "click_action": "FLUTTER_NOTIFICATION_CLICK",
               "status": "done",
               "senderId": senderId,
@@ -143,6 +90,7 @@ class NotificationServices {
           },
         ),
       );
+      Utils.showSnackBar('Notification sent');
     } catch (e) {
       debugPrint(e.toString());
     }

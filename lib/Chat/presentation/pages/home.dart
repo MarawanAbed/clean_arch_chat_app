@@ -14,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+
   final List<Tab> _tabList = [
     const Tab(text: 'Chats '),
     const Tab(text: 'Profile'),
