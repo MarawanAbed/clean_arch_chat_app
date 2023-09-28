@@ -76,7 +76,7 @@ class _MyAppState extends State<MyApp> {
             updateUser: sl<UpdateUserUseCase>(),
             signOut: sl<HomeSignOutUseCase>(),
             searchUserUseCases: sl<SearchUserUseCases>(),
-          )..getSingleUserMethod(FirebaseAuth.instance.currentUser!.uid),
+          )..getSingleUserMethod(FirebaseAuth.instance.currentUser!.uid)..getUserData(),
         ),
         BlocProvider(
           create: (context) => ChatCubit(

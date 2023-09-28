@@ -3,7 +3,6 @@ import 'package:clean_arch_chat/auth/presentation/manager/credential/credential_
 import 'package:clean_arch_chat/auth/presentation/widgets/auth_row.dart';
 import 'package:clean_arch_chat/utils/common/common.dart';
 import 'package:clean_arch_chat/utils/constant/constant.dart';
-import 'package:clean_arch_chat/utils/services/notification_services.dart';
 import 'package:clean_arch_chat/utils/services/show_snack_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,7 +22,6 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController passwordController = TextEditingController();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  static final notification=NotificationServices();
   @override
   void dispose() {
     emailController.dispose();
@@ -167,8 +165,6 @@ class _SignUpState extends State<SignUp> {
                                     userImage: cubit.imageUrl!,
                                   );
                                   await cubit.signUpMethod(userEntity);
-                                  await notification.requestPermission();
-                                  await notification.getToken();
                                 }
                               } else {
                                 Utils.showSnackBar(

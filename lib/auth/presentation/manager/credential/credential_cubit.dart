@@ -52,8 +52,6 @@ class CredentialCubit extends Cubit<CredentialState> {
     try {
       await signUp.call(user);
       await createUser.call(user);
-      await notification.requestPermission();
-      await notification.getToken();
       emit(SignUpSuccess());
     } on SocketException catch (e) {
       emit(SignUpError(e.toString()));
