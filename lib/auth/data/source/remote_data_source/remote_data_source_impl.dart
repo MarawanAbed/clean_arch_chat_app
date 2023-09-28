@@ -13,8 +13,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final FirebaseFirestore fireStore;
   final FirebaseAuth auth;
   Timer? emailVerificationTimer;
+
   AuthRemoteDataSourceImpl({required this.fireStore, required this.auth});
+
   static final notification = NotificationServices();
+
   @override
   Future createUser(UserEntity userEntity) async {
     final userCollection = fireStore.collection('users');
@@ -34,9 +37,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       } else {
         return;
       }
+    }).then((_) async {
+      await notification.requestPermission();
+      await notification.getToken();
     });
-    await notification.requestPermission();
-    await notification.getToken();
   }
 
   @override

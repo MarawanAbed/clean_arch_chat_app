@@ -37,9 +37,7 @@ class _SignUpState extends State<SignUp> {
         if (state is SignUpLoading) {
           const Center(child: CircularProgressIndicator());
         }
-        if (state is SignUpError) {
-          Utils.showSnackBar(state.message);
-        }
+
         if (state is UploadImageError) {
           Utils.showSnackBar(state.message);
         }

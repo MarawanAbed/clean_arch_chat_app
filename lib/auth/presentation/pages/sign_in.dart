@@ -3,7 +3,6 @@ import 'package:clean_arch_chat/auth/presentation/manager/credential/credential_
 import 'package:clean_arch_chat/auth/presentation/widgets/auth_row.dart';
 import 'package:clean_arch_chat/utils/common/common.dart';
 import 'package:clean_arch_chat/utils/constant/constant.dart';
-import 'package:clean_arch_chat/utils/services/show_snack_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,6 +17,7 @@ class _SignInState extends State<SignIn> {
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   var formKey = GlobalKey<FormState>();
+
   @override
   void dispose() {
     emailController.dispose();
@@ -29,9 +29,6 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     return BlocConsumer<CredentialCubit, CredentialState>(
       listener: (context, state) {
-        if (state is SignInError) {
-          Utils.showSnackBar(state.message);
-        }
         if (state is SignInLoading) {
           const Center(child: CircularProgressIndicator());
         }
@@ -107,7 +104,7 @@ class _SignInState extends State<SignIn> {
                         height: 45.0,
                         label: 'Sign In',
                         color: kPrimaryColor,
-                        onPressed: ()async {
+                        onPressed: () async {
                           if (formKey.currentState!.validate()) {
                             cubit.signInMethod(UserEntity(
                               userEmail: emailController.text,

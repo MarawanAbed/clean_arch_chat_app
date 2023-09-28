@@ -42,12 +42,13 @@ class AuthRepoImpl implements AuthRepository {
   @override
   Future signUp(UserEntity userEntity) async {
     try {
-      return await _remoteDataSource.signUp(userEntity);
+       return await _remoteDataSource.signUp(userEntity);
+
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+        Utils.showSnackBar('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+        Utils.showSnackBar('The account already exists for that email.');
       }
     } catch (e) {
       print(e);
