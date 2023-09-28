@@ -11,9 +11,6 @@ class SearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
-        if(state is HomeSearchLoading){
-          return const Center(child: CircularProgressIndicator());
-        }
         if(state is HomeSearchError){
           return Utils.showSnackBar(state.message);
         }

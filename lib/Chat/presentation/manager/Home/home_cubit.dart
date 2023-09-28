@@ -45,8 +45,8 @@ class HomeCubit extends Cubit<HomeState> {
       final userStream = await searchUserUseCases(userName);
       userStream.listen((users) {
         this.usersSearch = users;
-        emit(HomeSearchSuccess());
       });
+      emit (HomeSearchSuccess());
     } on SocketException catch (e) {
       emit(HomeSearchError(e.toString()));
     } catch (e) {
