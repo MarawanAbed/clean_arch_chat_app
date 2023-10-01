@@ -96,3 +96,33 @@ class NotificationServices {
     }
   }
 }
+
+
+class LocalNotifications {
+  static Future init(
+      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
+    var andriodInitilize =
+    const AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initilizationSettings =
+    InitializationSettings(android: andriodInitilize);
+    await flutterLocalNotificationsPlugin.initialize(initilizationSettings);
+    // Initialize time zones
+  }
+
+  static Future showText(
+      {var id = 0,
+        required String title,
+        required String body,
+        var payload,
+        required FlutterLocalNotificationsPlugin fln}) async {
+    AndroidNotificationDetails androidNotificationDetails =
+    const AndroidNotificationDetails(
+      'channelId',
+      'channelName',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+    var not = NotificationDetails(android: androidNotificationDetails);
+    await fln.show(id, title, body, not);
+  }
+}

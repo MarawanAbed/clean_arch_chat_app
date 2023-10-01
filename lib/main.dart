@@ -17,6 +17,7 @@ import 'package:clean_arch_chat/auth/presentation/manager/credential/credential_
 import 'package:clean_arch_chat/firebase_options.dart';
 import 'package:clean_arch_chat/utils/routes/routes.dart';
 import 'package:clean_arch_chat/utils/services/bloc_observer.dart';
+import 'package:clean_arch_chat/utils/services/notification_services.dart';
 import 'package:clean_arch_chat/utils/services/services_locator.dart';
 import 'package:clean_arch_chat/utils/services/show_snack_message.dart';
 import 'package:clean_arch_chat/utils/theme/theme.dart';
@@ -25,6 +26,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Chat/domain/usecases/sign_out.dart';
@@ -34,7 +36,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 }
-
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -42,10 +45,20 @@ void main() async {
   );
   await init();
   await FirebaseMessaging.instance.getInitialMessage();
+  await LocalNotifications.init(flutterLocalNotificationsPlugin);
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  FirebaseMessaging.onMessage.listen((message) async {
-    Utils.showSnackBar(message.notification!.body!);
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    print('Got a message whilst in the foreground!');
+    print('Message data: ${message.data}');
+    if (message.notification != null) {
+      await LocalNotifications.showText(
+        title: message.notification!.title!,
+        body: message.notification!.body!,
+        fln: flutterLocalNotificationsPlugin,
+      );
+    }
   });
+
   Bloc.observer = MyBlocObserver();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool hasShownSplash = prefs.getBool('hasShownSplash') ?? false;
