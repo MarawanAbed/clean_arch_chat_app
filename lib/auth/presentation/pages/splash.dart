@@ -48,7 +48,7 @@ class SplashScreen extends StatelessWidget {
                   onPressed: () async {
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
-                    prefs.setBool('hasShownSplash', true);
+                    prefs.setBool('splash', true);
                     Navigator.pushNamed(context, '/auth');
                   },
                   child: Row(

@@ -61,7 +61,7 @@ void main() async {
 
   Bloc.observer = MyBlocObserver();
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  bool hasShownSplash = prefs.getBool('hasShownSplash') ?? false;
+  bool hasShownSplash = prefs.getBool('splash') ?? false;
   runApp(MyApp(
     hasShownSplash: hasShownSplash,
   ));

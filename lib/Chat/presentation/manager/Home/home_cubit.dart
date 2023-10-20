@@ -8,6 +8,7 @@ import 'package:clean_arch_chat/Chat/domain/usecases/sign_out.dart';
 import 'package:clean_arch_chat/Chat/domain/usecases/update_user.dart';
 import 'package:clean_arch_chat/Chat/domain/usecases/upload_image_profile.dart';
 import 'package:clean_arch_chat/utils/services/show_snack_message.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';

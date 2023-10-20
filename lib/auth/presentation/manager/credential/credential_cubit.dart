@@ -29,7 +29,7 @@ class CredentialCubit extends Cubit<CredentialState> {
   final CreateUserUseCase createUser;
   bool isVisible = true;
   IconData suffix = Icons.visibility_outlined;
-  static final notification=NotificationServices();
+  static final notification = NotificationServices();
 
   static CredentialCubit get(context) => BlocProvider.of(context);
 
@@ -108,6 +108,14 @@ class CredentialCubit extends Cubit<CredentialState> {
       emit(UploadImageError(e.toString()));
     } catch (e) {
       emit(UploadImageError(e.toString()));
+    }
+  }
+
+  //close cubit
+  @override
+  void emit(CredentialState state) {
+    if (!isClosed) {
+      super.emit(state);
     }
   }
 }
